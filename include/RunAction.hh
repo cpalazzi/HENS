@@ -24,54 +24,40 @@
 // ********************************************************************
 //
 //
-/// \file B1SteppingAction.cc
-/// \brief Implementation of the B1SteppingAction class
+/// \file RunAction.hh
+/// \brief Definition of the RunAction class
 
-#include "B1SteppingAction.hh"
-#include "B1EventAction.hh"
-#include "B1DetectorConstruction.hh"
+#ifndef RunAction_h
+#define RunAction_h 1
 
-#include "G4Step.hh"
-#include "G4Event.hh"
-#include "G4RunManager.hh"
-#include "G4LogicalVolume.hh"
+#include "G4UserRunAction.hh"
+#include "G4Accumulable.hh"
+#include "globals.hh"
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+class G4Run;
 
-B1SteppingAction::B1SteppingAction(B1EventAction* eventAction)
-: G4UserSteppingAction(),
-  fEventAction(eventAction),
-  fScoringVolume(0)
-{}
+/// Run action class
+///
+/// In EndOfRunAction(), it calculates the dose in the selected volume 
+/// from the energy deposit accumulated via stepping and event actions.
+/// The computed dose is then printed on the screen.
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-B1SteppingAction::~B1SteppingAction()
-{}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-void B1SteppingAction::UserSteppingAction(const G4Step* step)
+class RunAction : public G4UserRunAction
 {
-  if (!fScoringVolume) { 
-    const B1DetectorConstruction* detectorConstruction
-      = static_cast<const B1DetectorConstruction*>
-        (G4RunManager::GetRunManager()->GetUserDetectorConstruction());
-    fScoringVolume = detectorConstruction->GetScoringVolume();   
-  }
+  public:
+    RunAction();
+    virtual ~RunAction();
 
-  // get volume of the current step
-  G4LogicalVolume* volume 
-    = step->GetPreStepPoint()->GetTouchableHandle()
-      ->GetVolume()->GetLogicalVolume();
-      
-  // check if we are in scoring volume
-  if (volume != fScoringVolume) return;
+    // virtual G4Run* GenerateRun();
+    virtual void BeginOfRunAction(const G4Run*);
+    virtual void   EndOfRunAction(const G4Run*);
 
-  // collect energy deposited in this step
-  G4double edepStep = step->GetTotalEnergyDeposit();
-  fEventAction->AddEdep(edepStep);  
-}
+    void AddEdep (G4double edep); 
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+  private:
+    G4Accumulable<G4double> fEdep;
+    G4Accumulable<G4double> fEdep2;
+};
+
+#endif
 

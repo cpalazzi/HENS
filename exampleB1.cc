@@ -24,11 +24,11 @@
 // ********************************************************************
 //
 //
-/// \file exampleB1.cc
-/// \brief Main program of the B1 example
+/// \file example.cc
+/// \brief Main program of the  example
 
-#include "B1DetectorConstruction.hh"
-#include "B1ActionInitialization.hh"
+#include "DetectorConstruction.hh"
+#include "ActionInitialization.hh"
 
 #ifdef G4MULTITHREADED
 #include "G4MTRunManager.hh"
@@ -69,7 +69,7 @@ int main(int argc,char** argv)
   // Set mandatory initialization classes
   //
   // Detector construction
-  runManager->SetUserInitialization(new B1DetectorConstruction());
+  runManager->SetUserInitialization(new DetectorConstruction());
 
   // Physics list
   G4VModularPhysicsList* physicsList = new QBBC;
@@ -77,7 +77,7 @@ int main(int argc,char** argv)
   runManager->SetUserInitialization(physicsList);
     
   // User action initialization
-  runManager->SetUserInitialization(new B1ActionInitialization());
+  runManager->SetUserInitialization(new ActionInitialization());
   
   // Initialize visualization
   //

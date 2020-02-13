@@ -24,41 +24,47 @@
 // ********************************************************************
 //
 //
-/// \file B1EventAction.cc
-/// \brief Implementation of the B1EventAction class
+/// \file ActionInitialization.cc
+/// \brief Implementation of the ActionInitialization class
 
-#include "B1EventAction.hh"
-#include "B1RunAction.hh"
-
-#include "G4Event.hh"
-#include "G4RunManager.hh"
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-B1EventAction::B1EventAction(B1RunAction* runAction)
-: G4UserEventAction(),
-  fRunAction(runAction),
-  fEdep(0.)
-{} 
+#include "ActionInitialization.hh"
+#include "PrimaryGeneratorAction.hh"
+#include "RunAction.hh"
+#include "EventAction.hh"
+#include "SteppingAction.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-B1EventAction::~B1EventAction()
+ActionInitialization::ActionInitialization()
+ : G4VUserActionInitialization()
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void B1EventAction::BeginOfEventAction(const G4Event*)
-{    
-  fEdep = 0.;
+ActionInitialization::~ActionInitialization()
+{}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void ActionInitialization::BuildForMaster() const
+{
+  RunAction* runAction = new RunAction;
+  SetUserAction(runAction);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void B1EventAction::EndOfEventAction(const G4Event*)
-{   
-  // accumulate statistics in run action
-  fRunAction->AddEdep(fEdep);
-}
+void ActionInitialization::Build() const
+{
+  SetUserAction(new PrimaryGeneratorAction);
+
+  RunAction* runAction = new RunAction;
+  SetUserAction(runAction);
+  
+  EventAction* eventAction = new EventAction(runAction);
+  SetUserAction(eventAction);
+  
+  SetUserAction(new SteppingAction(eventAction));
+}  
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

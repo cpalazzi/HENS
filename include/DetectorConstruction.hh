@@ -24,36 +24,35 @@
 // ********************************************************************
 //
 //
-/// \file B1SteppingAction.hh
-/// \brief Definition of the B1SteppingAction class
+/// \file DetectorConstruction.hh
+/// \brief Definition of the DetectorConstruction class
 
-#ifndef B1SteppingAction_h
-#define B1SteppingAction_h 1
+#ifndef DetectorConstruction_h
+#define DetectorConstruction_h 1
 
-#include "G4UserSteppingAction.hh"
+#include "G4VUserDetectorConstruction.hh"
 #include "globals.hh"
 
-class B1EventAction;
-
+class G4VPhysicalVolume;
 class G4LogicalVolume;
 
-/// Stepping action class
-/// 
+/// Detector construction class to define materials and geometry.
 
-class B1SteppingAction : public G4UserSteppingAction
+class DetectorConstruction : public G4VUserDetectorConstruction
 {
   public:
-    B1SteppingAction(B1EventAction* eventAction);
-    virtual ~B1SteppingAction();
+    DetectorConstruction();
+    virtual ~DetectorConstruction();
 
-    // method from the base class
-    virtual void UserSteppingAction(const G4Step*);
+    virtual G4VPhysicalVolume* Construct();
+    
+    G4LogicalVolume* GetScoringVolume() const { return fScoringVolume; }
 
-  private:
-    B1EventAction*  fEventAction;
-    G4LogicalVolume* fScoringVolume;
+  protected:
+    G4LogicalVolume*  fScoringVolume;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #endif
+
