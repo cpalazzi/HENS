@@ -109,7 +109,11 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   }
 
   G4double size = 0.8; 
-  G4double primaryParticleLocation = -1; // With respect to the length of 40m
+  G4double primaryParticleLocation = 1.5; // With respect to the length of 40m
+                                        // Proportionalities:
+                                        // 10m outside = 1.25
+                                        // 20m outside = 1.50
+                                        // 30m outside = 1.75
   G4double x0 = size * envRMax * std::sin(envPhi) * (G4UniformRand()-0.5);
   G4double y0 = size * envRMax * std::cos(envPhi) * (G4UniformRand()-0.5);
   G4double z0 = primaryParticleLocation * envZ;
