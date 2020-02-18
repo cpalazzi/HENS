@@ -32,6 +32,7 @@
 #include "G4LogicalVolumeStore.hh"
 #include "G4LogicalVolume.hh"
 #include "G4Box.hh"
+#include "G4Tubs.hh"
 #include "G4RunManager.hh"
 #include "G4ParticleGun.hh"
 #include "G4ParticleTable.hh"
@@ -44,7 +45,7 @@
 PrimaryGeneratorAction::PrimaryGeneratorAction()
 : G4VUserPrimaryGeneratorAction(),
   fParticleGun(0), 
-  fEnvelopeBox(0)
+  fEnvelopeTubs(0)
 {
   G4int n_particle = 1;
   fParticleGun  = new G4ParticleGun(n_particle);
@@ -53,10 +54,10 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
   G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
   G4String particleName;
   G4ParticleDefinition* particle
-    = particleTable->FindParticle(particleName="neutron");
+    = particleTable->FindParticle(particleName="proton");
   fParticleGun->SetParticleDefinition(particle);
   fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0.,0.,1.));
-  fParticleGun->SetParticleEnergy(6.*MeV);
+  fParticleGun->SetParticleEnergy(1.*GeV);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -77,19 +78,26 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   // on DetectorConstruction class we get Envelope volume
   // from G4LogicalVolumeStore.
   
-  G4double envSizeXY = 0;
-  G4double envSizeZ = 0;
+  //G4double envSizeXY = 0;
 
-  if (!fEnvelopeBox)
+  G4double envRMax = 0;
+  G4double envPhi  = 0;
+  G4double envZ = 0;
+
+  if (!fEnvelopeTubs)
   {
     G4LogicalVolume* envLV
       = G4LogicalVolumeStore::GetInstance()->GetVolume("Envelope");
-    if ( envLV ) fEnvelopeBox = dynamic_cast<G4Box*>(envLV->GetSolid());
+    if ( envLV ) fEnvelopeTubs = dynamic_cast<G4Tubs*>(envLV->GetSolid());
   }
 
-  if ( fEnvelopeBox ) {
-    envSizeXY = fEnvelopeBox->GetXHalfLength()*2.;
-    envSizeZ = fEnvelopeBox->GetZHalfLength()*2.;
+  if ( fEnvelopeTubs ) {
+    //envSizeXY = fEnvelopeBox->GetXHalfLength()*2.;
+    //envSizeZ = fEnvelopeBox->GetZHalfLength()*2.;
+    envRMax  = fEnvelopeTubs->GetRMax();
+    envPhi   = fEnvelopeTubs->GetDPhi();
+    envZ     = fEnvelopeTubs->GetDz();
+
   }  
   else  {
     G4ExceptionDescription msg;
@@ -101,11 +109,12 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   }
 
   G4double size = 0.8; 
-  G4double x0 = size * envSizeXY * (G4UniformRand()-0.5);
-  G4double y0 = size * envSizeXY * (G4UniformRand()-0.5);
-  G4double z0 = -0.5 * envSizeZ;
-  
-  fParticleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));
+  G4double primaryParticleLocation = -1; // With respect to the length of 40m
+  G4double x0 = size * envRMax * std::sin(envPhi) * (G4UniformRand()-0.5);
+  G4double y0 = size * envRMax * std::cos(envPhi) * (G4UniformRand()-0.5);
+  G4double z0 = primaryParticleLocation * envZ;
+
+  fParticleGun->SetParticlePosition(G4ThreeVector(x0, y0, z0));
 
   fParticleGun->GeneratePrimaryVertex(anEvent);
 }
