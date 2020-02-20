@@ -66,10 +66,10 @@ void EventAction::EndOfEventAction(const G4Event*)
   auto analysisManager = G4AnalysisManager::Instance();
 
   // fill histograms
-  analysisManager->FillH1(0, fEdep);
+  analysisManager->FillH1(1, fEdep);
 
   // fill ntuple
-  analysisManager->FillNtupleDColumn(0, fEdep);
+  analysisManager->FillNtupleDColumn(0, 0, fEdep);
   analysisManager->AddNtupleRow();
 
   

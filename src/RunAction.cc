@@ -74,14 +74,16 @@ RunAction::RunAction()
   //analysisManager->SetHistoDirectoryName("histograms");
   //analysisManager->SetNtupleDirectoryName("ntuple");
   analysisManager->SetVerboseLevel(1);
+  analysisManager->SetFirstHistoId(1);
+  //analysisManager->SetFirstNtupleId(1);
   analysisManager->SetNtupleMerging(true);
     // Note: merging ntuples is available only with Root output
 
   // Creating histograms
-  analysisManager->CreateH1("Edep","Edep in water", 100, 0., 10*MeV);
+  analysisManager->CreateH1("Edep","Edep in water", 100, 0., 1*GeV);
   
   // Creating ntuple
-  analysisManager->CreateNtuple("NeutronSim", "Edep");
+  analysisManager->CreateNtuple("Ntuple", "Edep");
   analysisManager->CreateNtupleDColumn("Edep");
   analysisManager->FinishNtuple();
 }
@@ -183,6 +185,12 @@ void RunAction::EndOfRunAction(const G4Run* run)
   // save histograms & ntuple
   //
   auto analysisManager = G4AnalysisManager::Instance();
+  //
+  //analysisManager->FillH1(1, edep);
+
+  //analysisManager->FillNtupleDColumn(0, 0, edep);
+  //analysisManager->AddNtupleRow(0);             
+
   analysisManager->Write();
   analysisManager->CloseFile();
 
