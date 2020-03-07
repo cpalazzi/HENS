@@ -4,6 +4,7 @@
    NeutronSim - a program for neutron energy deposition in water study
    ===================================================================
 
+This program is an edit of Joanna Gao's NeutronSim.
 This program added codes for storing the energy deposition histogram of neutrons
 in water and an ntuple that stores the same information, on top of the 
 modification on example B1.
@@ -19,7 +20,7 @@ modification on example B1.
    for Application Developers, Appendix 10: Geant4 Materials Database.    
 
 
-Read below if you are interested in the things I haven't chanegd from example
+Read below if you are interested in the things I haven't changed from example
 B1:
 			
  2- PHYSICS LIST
