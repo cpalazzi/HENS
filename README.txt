@@ -1,13 +1,12 @@
 -------------------------------------------------------------------
 
    ===================================================================
-   NeutronSim - a program for neutron energy deposition in water study
+                  HENS - High Energy Neutron Simulation
    ===================================================================
 
-This program is an edit of Joanna Gao's NeutronSim.
-This program added codes for storing the energy deposition histogram of neutrons
-in water and an ntuple that stores the same information, on top of the 
-modification on example B1.
+HENS is a program for stdudying the propagation and capture of high energy
+neutrons in a large volume of water. The simulation collects the position
+and time of neutron capture events relative to the centre.
 
  1- GEOMETRY DEFINITION                                                   
                                                                          
