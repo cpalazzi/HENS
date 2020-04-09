@@ -32,7 +32,7 @@
 #include "G4LogicalVolumeStore.hh"
 #include "G4LogicalVolume.hh"
 #include "G4Box.hh"
-#include "G4Tubs.hh"
+//#include "G4Tubs.hh"
 #include "G4RunManager.hh"
 #include "G4ParticleGun.hh"
 #include "G4ParticleTable.hh"
@@ -44,8 +44,8 @@
 
 PrimaryGeneratorAction::PrimaryGeneratorAction()
 : G4VUserPrimaryGeneratorAction(),
-  fParticleGun(0), 
-  fEnvelopeTubs(0)
+  fParticleGun(0)//, 
+  //fEnvelopeBox(0)
 {
   G4int n_particle = 1;
   fParticleGun  = new G4ParticleGun(n_particle);
@@ -71,52 +71,10 @@ PrimaryGeneratorAction::~PrimaryGeneratorAction()
 
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
-  //this function is called at the begining of each event
-  //
-
-  // In order to avoid dependence of PrimaryGeneratorAction
-  // on DetectorConstruction class we get Envelope volume
-  // from G4LogicalVolumeStore.
-  
-  //G4double envSizeXY = 0;
-
-  G4double envRMax = 0;
-  G4double envPhi  = 0;
-  G4double envZ = 0;
-
-  if (!fEnvelopeTubs)
-  {
-    G4LogicalVolume* envLV
-      = G4LogicalVolumeStore::GetInstance()->GetVolume("Envelope");
-    if ( envLV ) fEnvelopeTubs = dynamic_cast<G4Tubs*>(envLV->GetSolid());
-  }
-
-  if ( fEnvelopeTubs ) {
-    //envSizeXY = fEnvelopeBox->GetXHalfLength()*2.;
-    //envSizeZ = fEnvelopeBox->GetZHalfLength()*2.;
-    envRMax  = fEnvelopeTubs->GetRMax();
-    envPhi   = fEnvelopeTubs->GetDPhi();
-    envZ     = fEnvelopeTubs->GetDz();
-
-  }  
-  else  {
-    G4ExceptionDescription msg;
-    msg << "Envelope volume of box shape not found.\n"; 
-    msg << "Perhaps you have changed geometry.\n";
-    msg << "The gun will be place at the center.";
-    G4Exception("PrimaryGeneratorAction::GeneratePrimaries()",
-     "MyCode0002",JustWarning,msg);
-  }
-
-  G4double size = 0.8; 
-  G4double primaryParticleLocation = 0.8;//1.5; // With respect to the length of 40m
-                                        // Proportionalities:
-                                        // 10m outside = 1.25
-                                        // 20m outside = 1.50
-                                        // 30m outside = 1.75
-  G4double x0 = size * envRMax * std::sin(envPhi) * (G4UniformRand()-0.5);
-  G4double y0 = size * envRMax * std::cos(envPhi) * (G4UniformRand()-0.5);
-  G4double z0 = primaryParticleLocation * envZ;
+ 
+  G4double x0 = 0.*m;
+  G4double y0 = 0.*m;
+  G4double z0 = 0.*m;
 
   fParticleGun->SetParticlePosition(G4ThreeVector(x0, y0, z0));
 

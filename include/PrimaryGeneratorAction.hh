@@ -37,7 +37,7 @@
 class G4ParticleGun;
 class G4Event;
 class G4Box;
-class G4Tubs;
+//class G4Tubs;
 
 /// The primary generator action class with particle gun.
 ///
@@ -59,7 +59,7 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
   private:
     G4ParticleGun*  fParticleGun; // pointer a to G4 gun class
     //G4Box* fEnvelopeBox;
-    G4Tubs *fEnvelopeTubs;
+    //G4Tubs *fEnvelopeTubs;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

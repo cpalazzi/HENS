@@ -35,7 +35,7 @@
 #include "G4Cons.hh"
 #include "G4Orb.hh"
 #include "G4Sphere.hh"
-#include "G4Tubs.hh"
+//#include "G4Tubs.hh"
 #include "G4Trd.hh"
 #include "G4LogicalVolume.hh"
 #include "G4PVPlacement.hh"
@@ -63,8 +63,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   // Envelope parameters
   //
   //G4double env_sizeXY = 20*cm, env_sizeZ = 30*cm;
-  G4double env_rmin = 0.*m, env_rmax = 39.3*m, env_height = 41.4*m;
-  G4double angleMin = 0.*deg, angleMax = 360.*deg;
+  G4double env_x = 50.0*m, env_y = 50.0*m, env_z = 50.0*m;
 
   G4Material* env_mat = nist->FindOrBuildMaterial("G4_WATER");
    
@@ -78,20 +77,18 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   //G4double world_sizeXY = 1.2*env_sizeXY;
   //G4double world_sizeZ  = 1.2*env_sizeZ;
   
-  G4double world_rmin = 0.*m, 
-           world_rmax = 2.*env_rmax,
-           world_height = 2.*env_height;    //world cylinder height at 82.8m
+  G4double world_x = 2.*env_x, 
+           world_y = 2.*env_y,
+           world_z = 2.*env_z;   
                         
 
   G4Material* world_mat = nist->FindOrBuildMaterial("G4_CONCRETE");
   
-  G4Tubs* solidWorld =    
-    new G4Tubs("World",                      //its name
-                world_rmin,                  //inner radius
-                world_rmax,                  //outer radius
-                world_height,                //its height
-                angleMin,                    //start angle
-                angleMax);                   //its height
+  G4Box* solidWorld =    
+    new G4Box("World",                 
+                world_x,                  
+                world_y,                  
+                world_z);                  
 
       
   G4LogicalVolume* logicWorld =                         
@@ -112,15 +109,13 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   //     
   // Envelope
   //  
-  G4Tubs* solidEnv =    
-   new G4Tubs("Envelope",                    //its name     
-               env_rmin,                     //inner radius 
-               env_rmax,                     //outer radius 
-               env_height,                   //its height   
-               angleMin,                     //start angle  
-               angleMax);                    //its height   
+  G4Box* solidEnv =    
+   new G4Box("Envelope",             
+               env_x,                    
+               env_y,             
+               env_z);                    
 
-      
+  
   G4LogicalVolume* logicEnv =                         
     new G4LogicalVolume(solidEnv,            //its solid
                         env_mat,             //its material
