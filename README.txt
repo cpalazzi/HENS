@@ -19,13 +19,10 @@ and time of neutron capture events relative to the centre.
    for Application Developers, Appendix 10: Geant4 Materials Database.    
 
 
-Read below if you are interested in the things I haven't changed from example
-B1:
-			
  2- PHYSICS LIST
  
-   The particle's type and the physic processes which will be available
-   in this example are set in the QBBC physics list. This physics list 
+   HENS by default uses the FTFP_BERT_HP phyiscs list. The original
+   exampleB1 used the QBBC physics list. This physics list 
    requires data files for electromagnetic and hadronic processes.
    See more on installation of the datasets in Geant4 Installation Guide,
    Chapter 3.3: Note On Geant4 Datasets:
@@ -37,6 +34,9 @@ B1:
    In addition the build-in interactive command:
                /process/(in)activate processName
    allows to activate/inactivate the processes one by one.
+
+Read below if you are interested in the things I haven't changed from example
+B1:
    
  3- ACTION INITALIZATION
 
