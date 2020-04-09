@@ -34,8 +34,8 @@ file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
 #
-add_executable(exampleB1 exampleB1.cc ${sources} ${headers})
-target_link_libraries(exampleB1 ${Geant4_LIBRARIES})
+add_executable(HENS exampleB1.cc ${sources} ${headers})
+target_link_libraries(HENS ${Geant4_LIBRARIES})
 
 #----------------------------------------------------------------------------
 # Copy all scripts to the build directory, i.e. the directory in which we
@@ -63,11 +63,11 @@ endforeach()
 # For internal Geant4 use - but has no effect if you build this
 # example standalone
 #
-add_custom_target(B1 DEPENDS exampleB1)
+add_custom_target(B1 DEPENDS HENS)
 
 #----------------------------------------------------------------------------
 # Install the executable to 'bin' directory under CMAKE_INSTALL_PREFIX
 #
-install(TARGETS exampleB1 DESTINATION bin)
+install(TARGETS HENS DESTINATION bin)
 
 
