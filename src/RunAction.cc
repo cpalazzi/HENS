@@ -107,7 +107,7 @@ void RunAction::BeginOfRunAction(const G4Run*)
 
   // Open an output file
   //
-  G4String fileName = "NeutronSim";
+  G4String fileName = "HENS";
   analysisManager->OpenFile(fileName);
 
   // reset accumulables to their initial values
