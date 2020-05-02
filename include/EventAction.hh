@@ -24,54 +24,38 @@
 // ********************************************************************
 //
 //
-/// \file SteppingAction.cc
-/// \brief Implementation of the SteppingAction class
+/// \file EventAction.hh
+/// \brief Definition of the EventAction class
 
-#include "SteppingAction.hh"
-#include "EventAction.hh"
-#include "DetectorConstruction.hh"
+#ifndef EventAction_h
+#define EventAction_h 1
 
-#include "G4Step.hh"
-#include "G4Event.hh"
-#include "G4RunManager.hh"
-#include "G4LogicalVolume.hh"
+#include "G4UserEventAction.hh"
+#include "globals.hh"
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+class RunAction;
 
-SteppingAction::SteppingAction(EventAction* eventAction)
-: G4UserSteppingAction(),
-  fEventAction(eventAction),
-  fScoringVolume(0)
-{}
+/// Event action class
+///
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-SteppingAction::~SteppingAction()
-{}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-void SteppingAction::UserSteppingAction(const G4Step* step)
+class EventAction : public G4UserEventAction
 {
-  if (!fScoringVolume) { 
-    const DetectorConstruction* detectorConstruction
-      = static_cast<const DetectorConstruction*>
-        (G4RunManager::GetRunManager()->GetUserDetectorConstruction());
-    fScoringVolume = detectorConstruction->GetScoringVolume();   
-  }
+  public:
+    EventAction(RunAction* runAction);
+    virtual ~EventAction();
 
-  // get volume of the current step
-  G4LogicalVolume* volume 
-    = step->GetPreStepPoint()->GetTouchableHandle()
-      ->GetVolume()->GetLogicalVolume();
-      
-  // check if we are in scoring volume
-  if (volume != fScoringVolume) return;
+    virtual void BeginOfEventAction(const G4Event* event);
+    virtual void EndOfEventAction(const G4Event* event);
 
-  // collect energy deposited in this step
-  G4double edepStep = step->GetTotalEnergyDeposit();
-  fEventAction->AddEdep(edepStep);  
-}
+    void AddEdep(G4double edep) { fEdep += edep; }
+
+  private:
+    RunAction* fRunAction;
+    G4double     fEdep;
+};
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+#endif
+
+    

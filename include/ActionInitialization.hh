@@ -24,54 +24,28 @@
 // ********************************************************************
 //
 //
-/// \file SteppingAction.cc
-/// \brief Implementation of the SteppingAction class
+/// \file ActionInitialization.hh
+/// \brief Definition of the ActionInitialization class
 
-#include "SteppingAction.hh"
-#include "EventAction.hh"
-#include "DetectorConstruction.hh"
+#ifndef ActionInitialization_h
+#define ActionInitialization_h 1
 
-#include "G4Step.hh"
-#include "G4Event.hh"
-#include "G4RunManager.hh"
-#include "G4LogicalVolume.hh"
+#include "G4VUserActionInitialization.hh"
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+/// Action initialization class.
 
-SteppingAction::SteppingAction(EventAction* eventAction)
-: G4UserSteppingAction(),
-  fEventAction(eventAction),
-  fScoringVolume(0)
-{}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-SteppingAction::~SteppingAction()
-{}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-void SteppingAction::UserSteppingAction(const G4Step* step)
+class ActionInitialization : public G4VUserActionInitialization
 {
-  if (!fScoringVolume) { 
-    const DetectorConstruction* detectorConstruction
-      = static_cast<const DetectorConstruction*>
-        (G4RunManager::GetRunManager()->GetUserDetectorConstruction());
-    fScoringVolume = detectorConstruction->GetScoringVolume();   
-  }
+  public:
+    ActionInitialization();
+    virtual ~ActionInitialization();
 
-  // get volume of the current step
-  G4LogicalVolume* volume 
-    = step->GetPreStepPoint()->GetTouchableHandle()
-      ->GetVolume()->GetLogicalVolume();
-      
-  // check if we are in scoring volume
-  if (volume != fScoringVolume) return;
-
-  // collect energy deposited in this step
-  G4double edepStep = step->GetTotalEnergyDeposit();
-  fEventAction->AddEdep(edepStep);  
-}
+    virtual void BuildForMaster() const;
+    virtual void Build() const;
+};
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+#endif
+
+    

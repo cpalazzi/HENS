@@ -24,54 +24,44 @@
 // ********************************************************************
 //
 //
-/// \file SteppingAction.cc
-/// \brief Implementation of the SteppingAction class
+/// \file PrimaryGeneratorAction.hh
+/// \brief Definition of the PrimaryGeneratorAction class
 
-#include "SteppingAction.hh"
-#include "EventAction.hh"
-#include "DetectorConstruction.hh"
+#ifndef PrimaryGeneratorAction_h
+#define PrimaryGeneratorAction_h 1
 
-#include "G4Step.hh"
-#include "G4Event.hh"
-#include "G4RunManager.hh"
-#include "G4LogicalVolume.hh"
+#include "G4VUserPrimaryGeneratorAction.hh"
+#include "G4ParticleGun.hh"
+#include "globals.hh"
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+class G4ParticleGun;
+class G4Event;
+class G4Box;
+//class G4Tubs;
 
-SteppingAction::SteppingAction(EventAction* eventAction)
-: G4UserSteppingAction(),
-  fEventAction(eventAction),
-  fScoringVolume(0)
-{}
+/// The primary generator action class with particle gun.
+///
+/// The default kinematic is a 1 TeV proton, randomly distribued 
+/// in front of the phantom across 80% of the (X,Y) phantom size.
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-SteppingAction::~SteppingAction()
-{}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-void SteppingAction::UserSteppingAction(const G4Step* step)
+class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 {
-  if (!fScoringVolume) { 
-    const DetectorConstruction* detectorConstruction
-      = static_cast<const DetectorConstruction*>
-        (G4RunManager::GetRunManager()->GetUserDetectorConstruction());
-    fScoringVolume = detectorConstruction->GetScoringVolume();   
-  }
+  public:
+    PrimaryGeneratorAction();    
+    virtual ~PrimaryGeneratorAction();
 
-  // get volume of the current step
-  G4LogicalVolume* volume 
-    = step->GetPreStepPoint()->GetTouchableHandle()
-      ->GetVolume()->GetLogicalVolume();
-      
-  // check if we are in scoring volume
-  if (volume != fScoringVolume) return;
-
-  // collect energy deposited in this step
-  G4double edepStep = step->GetTotalEnergyDeposit();
-  fEventAction->AddEdep(edepStep);  
-}
+    // method from the base class
+    virtual void GeneratePrimaries(G4Event*);         
+  
+    // method to access particle gun
+    const G4ParticleGun* GetParticleGun() const { return fParticleGun; }
+  
+  private:
+    G4ParticleGun*  fParticleGun; // pointer a to G4 gun class
+    //G4Box* fEnvelopeBox;
+    //G4Tubs *fEnvelopeTubs;
+};
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+#endif
