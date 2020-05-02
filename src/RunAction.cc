@@ -204,6 +204,11 @@ void RunAction::AddEdep(G4double edep)
   fEdep2 += edep*edep;
 }
 
+void RunAction::AddPosition(G4double position)
+{
+  
+}
+
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
